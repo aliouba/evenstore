@@ -1,0 +1,67 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: es
+spec:
+  serviceName: es
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: es
+        escluster: es
+    spec:
+      containers:
+        - name: es
+          image: "eventstore/eventstore"
+          env: 
+            - name: EVENTSTORE_INT_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: EVENTSTORE_EXT_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: EVENTSTORE_INT_TCP_PORT
+              value: "1111"
+            - name: EVENTSTORE_EXT_TCP_PORT
+              value: "1112"
+            - name: EVENTSTORE_INT_HTTP_PORT
+              value: "2114"
+            - name: EVENTSTORE_EXT_HTTP_PORT
+              value: "2113"
+            - name: EVENTSTORE_CLUSTER_SIZE
+              value: "3"
+            - name: EVENTSTORE_CLUSTER_DNS
+              value: "es.default.svc.cluster.local"
+            - name: EVENTSTORE_CLUSTER_GOSSIP_PORT
+              value: "2114"
+            - name: EVENTSTORE_GOSSIP_ALLOWED_DIFFERENCE_MS
+              value: "600000"
+            - name: EVENTSTORE_INT_HTTP_PREFIXES
+              value: "http://*:2114/"
+            - name: EVENTSTORE_EXT_HTTP_PREFIXES
+              value: "http://*:2113/"
+            - name: EVENTSTORE_DB
+              value: "/usr/data/eventstore/data"
+            - name: EVENTSTORE_LOG
+              value: "/usr/data/eventstore/log"
+          ports:
+            - containerPort: 2113
+            - containerPort: 2114
+            - containerPort: 1111
+            - containerPort: 1112
+          volumeMounts:
+            - mountPath: "/usr/data/eventstore"
+              name: event-store-data
+  volumeClaimTemplates:
+  - metadata:
+      name: event-store-data
+      annotations:
+        volume.alpha.kubernetes.io/storage-class: default
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
