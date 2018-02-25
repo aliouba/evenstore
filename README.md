@@ -9,7 +9,7 @@ A stoarge class must exist. You d'ont need to setup a new storage class with AKS
 
 # StatefulSet
 
-The Statefull.yaml file allow to launch 3 evenstore instances (cluster mode). 
+The Statefull.yaml file allows to launch 3 evenstore instances (cluster mode). 
 You need to customize depending on the storage class and the disk size. For each evenstore instance, a pvc will be created.
 
 
