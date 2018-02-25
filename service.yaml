@@ -6,12 +6,33 @@ spec:
   selector:
     escluster: "es"
   ports:
+  - name: 'internal-http'
+    protocol: TCP
+    port: 2113
+    targetPort: 2113
+  - name: 'external-http'
+    protocol: TCP
+    port: 2114
+    targetPort: 2114
+  - name: 'external-tcp'
+    protocol: TCP
+    port: 1113
+    targetPort: 1113
+  - name: 'internal-tcp'
+    protocol: TCP
+    port: 1112
+    targetPort: 1112
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: "es-front"
+spec:
+  selector:
+    escluster: "es"
+  ports:
     - name: "ext-http"
       protocol: "TCP"
       port: 2113
       targetPort: 2113
-    - name: "ext-tcp"
-      protocol: "TCP"
-      port: 1112
-      targetPort: 1112
   type: LoadBalancer
