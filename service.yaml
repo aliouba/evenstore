@@ -22,6 +22,7 @@ spec:
     protocol: TCP
     port: 1112
     targetPort: 1112
+  clusterIP : None
 ---
 kind: Service
 apiVersion: v1
